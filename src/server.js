@@ -1,16 +1,21 @@
-const { response } = require('express');
-const express = require('express');
-const server = express();
-const routes = require("./routes");
 
-//usando template engine
+const express = require("express")
+
+const server = express()
+//chama o arquivo routes e joga na const routes
+const routes = require("./routes")
+
+//Usar template Engine
 server.set('view engine', 'ejs')
 
-//habilitar arquivos estaticos
+
+//habilitar arquivos estáticos (imagem etc)
 server.use(express.static("public"))
 
-//usar o req.body
-server.use(express.urlencoded());
+//usar o req.body -- server.use - para habilitar coisas no servidor
+server.use(express.urlencoded({extended: true}))
 
+// routes
 server.use(routes)
-server.listen(3000, () => console.log('rodando'));
+//criar o servidor na porte 3000
+server.listen(3000, () => { console.log('rodandooo') })
