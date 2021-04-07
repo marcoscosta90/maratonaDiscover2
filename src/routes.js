@@ -1,51 +1,6 @@
 const express = require("express");
 const routes = express.Router();
-
-const views = __dirname + "/views/"
-
-const Profile = {
-    data: {
-        name: "Marcos",
-        avatar: "https://github.com/marcoscosta90.png",
-        "monthly-budget": 3000,
-        "days-per-week": 5,
-        "hours-per-day": 5,
-        "vacation-per-year": 4,
-        "value-hour": 75
-    },
-    controllers: {
-        index(req, res) {
-            return res.render(views + "profile", { profile: Profile.data })
-        },
-        update(req, res) {
-            //req.body para pegar os dados
-            const data = req.body
-
-            //definir quantas semanas tem num ano: 52
-            const weeksPerYear = 52
-
-            //remover as semanas de ferias do ano, para pegar quans semanas tem em 1 mes
-            const weeksPerMonth = (weeksPerYear - data["vacation-per-year"]) / 12
-
-            //total de horas trabalhadas na semana
-            const weekTotalHours = data["hours-per-day"] * data["days-per-week"]
-
-            //horas trabalhadas no mes
-            const monthlyTotalHours = weekTotalHours * weeksPerMonth
-
-            //qual vai ser o valor da minha hora
-            const valueHour = data["monthly-budget"] / monthlyTotalHours
-
-            Profile.data = {
-                ...Profile.data,
-                ...req.body,
-                "value-hour": valueHour
-            }
-            return res.redirect('/profile')
-
-        }
-    }
-}
+const ProfileController = require('./controllers/ProfileController')
 
 
 const Job = {
@@ -80,11 +35,11 @@ const Job = {
                     budget: Job.services.calculateBudget(job, Profile.data["value-hour"]),
                 };
             });
-             res.render(views + "index", { jobs: updatedJobs })
+             res.render( "index", { jobs: updatedJobs })
         },
 
         create(req, res) {
-            return res.render(views + "job")
+            return res.render( "job")
         },
 
         save(req, res) {
@@ -112,7 +67,7 @@ const Job = {
 
             job.budget = Job.services.calculateBudget(job, Profile.data["value-hour"])
 
-            return res.render(views + "job-edit", { job })
+            return res.render("job-edit", { job })
         },
 
         update(req, res) {
@@ -174,7 +129,7 @@ routes.post('/job', Job.controllers.save)
 routes.get('/job/:id', Job.controllers.show)
 routes.post('/job/:id', Job.controllers.update)
 routes.post('/job/delete/:id', Job.controllers.delete)
-routes.get('/profile', Profile.controllers.index)
-routes.post('/profile', Profile.controllers.update)
+routes.get('/profile', ProfileController.index)
+routes.post('/profile', ProfileController.update)
 
 module.exports = routes;
