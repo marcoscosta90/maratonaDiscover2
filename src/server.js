@@ -18,7 +18,6 @@ server.use(express.static("public"))
 //usar o req.body -- server.use - para habilitar coisas no servidor
 server.use(express.urlencoded({extended: true}))
 
-
 server.use(routes)
 //criar o servidor na porte 3000
 server.listen(3000, () => { console.log('rodandooo') })
